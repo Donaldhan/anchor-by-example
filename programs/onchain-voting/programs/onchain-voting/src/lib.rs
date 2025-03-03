@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("AkN2PoD2JrWyYzmB6FEbWBncQbsMxhYH5otfmQJFMsdC");
+declare_id!("G6rDtj4f3KSNRXZUytAF9Qs2w5FqpDRPzZs7UD7ScMbL");
 
 #[program]
 pub mod onchain_voting {
@@ -28,6 +28,13 @@ pub mod onchain_voting {
     }
 }
 
+// •	vote_account 是 VoteBank 类型的账户，用于存储投票数据。
+// •	payer = signer：投票账户的初始化费用由 signer（调用者）支付。
+// •	space = 8 + 1 + 8 + 8：
+// •	8 字节：Solana 账户数据的 默认前缀。
+// •	1 字节：is_open_to_vote（布尔值，占 1 字节）。
+// •	8 字节：存储 gm 计数。
+// •	8 字节：存储 gn 计数。
 #[derive(Accounts)]
 pub struct InitVote<'info> {
     // Making a global account for storing votes
@@ -43,7 +50,8 @@ pub struct InitVote<'info> {
 
     pub system_program: Program<'info, System>,
 }
-
+// •	vote_account 需要 可变（mut），因为投票会修改 gm 或 gn 的值。
+// •	signer 是投票者的签名账户。
 #[derive(Accounts)]
 pub struct GibVote<'info> {
     // Storing Votes in global account
@@ -53,7 +61,10 @@ pub struct GibVote<'info> {
     pub signer: Signer<'info>,
 }
 
-
+// •	VoteBank 结构存储了：
+// •	is_open_to_vote（1 字节）：是否开放投票。
+// •	gm（8 字节）：GM 票数。
+// •	gn（8 字节）：GN 票数。
 #[account]
 #[derive(Default)]
 pub struct VoteBank {

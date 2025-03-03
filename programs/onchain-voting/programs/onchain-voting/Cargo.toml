@@ -9,11 +9,17 @@ crate-type = ["cdylib", "lib"]
 name = "onchain_voting"
 
 [features]
+default = []
+cpi = ["no-entrypoint"]
 no-entrypoint = []
 no-idl = []
 no-log-ix-name = []
-cpi = ["no-entrypoint"]
-default = []
+idl-build = ["anchor-lang/idl-build"]
 
 [dependencies]
-anchor-lang = "0.25.0"
+anchor-lang = "0.30.1"
+ahash = "0.8.11"
+
+# [patch.crates-io]
+# ahash = "0.8.11"
+# ahash = { git = "https://github.com/tkaitchuck/aHash", tag = "v0.8.11" }
