@@ -4,6 +4,9 @@
 resolution = true
 skip-lint = false
 
+[programs.localnet]
+onchain_voting = "G6rDtj4f3KSNRXZUytAF9Qs2w5FqpDRPzZs7UD7ScMbL"
+
 [programs.devnet]
 onchain_voting = "G6rDtj4f3KSNRXZUytAF9Qs2w5FqpDRPzZs7UD7ScMbL"
 
