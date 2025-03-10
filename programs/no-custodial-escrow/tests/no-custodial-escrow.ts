@@ -1,18 +1,21 @@
-import * as anchor from "@project-serum/anchor";
+import * as anchor from "@coral-xyz/anchor";
 import * as splToken from "@solana/spl-token";
-import { Program } from "@project-serum/anchor";
-import { NonCustodialEscrow } from "../target/types/non_custodial_escrow";
+import { Program } from "@coral-xyz/anchor";
+import { NoCustodialEscrow } from "../target/types/no_custodial_escrow";
 import { LAMPORTS_PER_SOL, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
-import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet";
+import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
 
 describe("solvrf", () => {
+  // Configure the client to use the local cluster.
   const provider =  anchor.AnchorProvider.env();
   anchor.setProvider(provider);
 
-  const program = anchor.workspace.NonCustodialEscrow as Program<NonCustodialEscrow>;
+  const program = anchor.workspace.NoCustodialEscrow as Program<NoCustodialEscrow>;
   
   const seller =  provider.wallet.publicKey; // anchor.web3.Keypair.generate();
+  console.log(`seller :: `, seller);
   const payer = (provider.wallet as NodeWallet).payer;
+  console.log(`payer :: `, payer.publicKey.toString());
 
   const buyer =  anchor.web3.Keypair.generate();
   console.log(`Buyer :: `, buyer.publicKey.toString());
@@ -109,7 +112,7 @@ describe("solvrf", () => {
   });
 
   it("Execute the trade", async () => { 
-    const tx = await program.methods.execute()
+    const tx = await program.methods.accept()
       .accounts({
         buyer: buyer.publicKey,
         escrow: escrow,
