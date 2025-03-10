@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("8vBaXtoP9dBt97jA9FQz9NyuchRpFWEuiLxLLj7MYbnQ");
+declare_id!("54f9DvhGvyt6UYUqUx5S7z86gRRQ7Y9vdq9NH5EM1z7F");
 
 #[program]
 pub mod self_custodial_facebook {
@@ -10,7 +10,7 @@ pub mod self_custodial_facebook {
 
         // setting userdata in user's account
         let users_account_data = &mut ctx.accounts.facebook_account;
-        users_account_data.bump = *ctx.bumps.get("facebook_account").unwrap();
+        users_account_data.bump = ctx.bumps.facebook_account;
 
         users_account_data.authority = *ctx.accounts.signer.key;
         users_account_data.name = name.to_owned();

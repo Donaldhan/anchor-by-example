@@ -1,20 +1,21 @@
-import * as anchor from '@project-serum/anchor'
-import { Program } from '@project-serum/anchor'
+import * as anchor from "@coral-xyz/anchor";
+import { Program } from "@coral-xyz/anchor";
 import { SelfCustodialFacebook } from '../target/types/self_custodial_facebook'
 
 describe('self-custodial-facebook', () => {
   const provider = anchor.AnchorProvider.env()
   anchor.setProvider(provider)
-
+  const payer =  provider.wallet.publicKey; // anchor.web3.Keypair.generate();
+  console.log(`payer :: `, payer);
   const program = anchor.workspace.SelfCustodialFacebook as Program<SelfCustodialFacebook>
-
+  let userFacebookAddress;
   it('Creating a new account for user', async () => {
     const ix = await program.methods.createFacebook(
       'Deep',
       'always tinkring',
       '0xdeep'
     )
-    const userFacebookAddress = (await ix.pubkeys()).facebookAccount
+    userFacebookAddress = (await ix.pubkeys()).facebookAccount
     console.log('User facebook address :: ', userFacebookAddress.toString())
 
     // Create user's facebook address
@@ -32,7 +33,7 @@ describe('self-custodial-facebook', () => {
 
   it('Update My Status', async () => {
     const ix = await program.methods.updateStatus('&mut self :crab')
-    const userFacebookAddress = (await ix.pubkeys()).facebookAccount
+    userFacebookAddress = (await ix.pubkeys()).facebookAccount
     console.log('usrFaceBook Address :: ', userFacebookAddress.toString())
 
     // Create user's facebook address
@@ -44,14 +45,12 @@ describe('self-custodial-facebook', () => {
       userFacebookAddress
     )
     console.log(
-      `Created a new account with following details \n Name :: ${userDetails.name} \n Status :: ${userDetails.status} \n Twitter :: ${userDetails.twitter}`
+      `Update a new account with following details \n Name :: ${userDetails.name} \n Status :: ${userDetails.status} \n Twitter :: ${userDetails.twitter}`
     )
   })
 
   it("Find Someone's Facebook", async () => {
-    const userAddress = new anchor.web3.PublicKey(
-      'Gz2k7789kKnoeDo9TWXpCmSudp5DW22u8FtnRcFS5aS6'
-    )
+    const userAddress = payer;
     const [userFacebookAccount, _] =
       await anchor.web3.PublicKey.findProgramAddress(
         [
@@ -65,7 +64,7 @@ describe('self-custodial-facebook', () => {
     try {
       let userDetails = await program.account.facebookAccount.fetch(userFacebookAccount);
       console.log(
-        `Created a new account with following details \n Name :: ${userDetails.name} \n Status :: ${userDetails.status} \n Twitter :: ${userDetails.twitter}`
+        `Find a new account with following details \n Name :: ${userDetails.name} \n Status :: ${userDetails.status} \n Twitter :: ${userDetails.twitter}`
       )
     } catch (error) {
       console.log("Users account does not exist :: ", error) 
@@ -74,7 +73,7 @@ describe('self-custodial-facebook', () => {
 
   it('Close My Facebook Account', async () => {
     const ix = await program.methods.deleteAccount()
-    const userFacebookAddress = (await ix.pubkeys()).facebookAccount
+    userFacebookAddress = (await ix.pubkeys()).facebookAccount
     console.log('usrFaceBook Address :: ', userFacebookAddress.toString())
 
     // Create user's facebook address
@@ -87,7 +86,7 @@ describe('self-custodial-facebook', () => {
         userFacebookAddress
       )
       console.log(
-        `Created a new account with following details \n Name :: ${userDetails.name} \n Status :: ${userDetails.status} \n Twitter :: ${userDetails.twitter}`
+        `Close a new account with following details \n Name :: ${userDetails.name} \n Status :: ${userDetails.status} \n Twitter :: ${userDetails.twitter}`
       )
     } catch {
       console.log("User Details Not found, 'cuz we close the account")
